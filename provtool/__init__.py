@@ -65,8 +65,12 @@ def devices(path):
         return
     plistString = plistStringFromProvFile(fullpath)
     plist = plistlib.readPlistFromString(plistString)
-    for device in plist['ProvisionedDevices']:
-        print device
+
+    try:
+        for device in plist['ProvisionedDevices']:
+            print device
+    except KeyError, e:
+        print 'This provisioning profile does not contain devices'
 
 
 COMMANDS = ('list', 'path', 'uuid', 'devices')
