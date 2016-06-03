@@ -73,7 +73,23 @@ def devices(path):
         print 'This provisioning profile does not contain devices'
 
 
-COMMANDS = ('list', 'path', 'uuid', 'devices')
+def entitlements(path):
+    fullpath = os.path.expanduser(path)
+    if not isProvFile(fullpath):
+        err = '%s is not a Provisioning Profile' % (fullpath)
+        #sys.stderr.write(err)
+        raise ValueError(err)  # TODO: ValueError the right kind of exception?
+        return
+    plistString = plistStringFromProvFile(fullpath)
+    plist = plistlib.readPlistFromString(plistString)
+
+    try:
+        import pprint
+        pprint.pprint(plist['Entitlements'])
+    except KeyError, e:
+        print 'This provisioning profile does not contain entitlements'
+
+COMMANDS = ('list', 'path', 'uuid', 'devices', 'entitlements')
 
 
 def usage(command=None):
@@ -81,10 +97,11 @@ def usage(command=None):
 usage: provtool <subcommand>
 
 Available subcommands are:
-    list            List installed Provisioning Profiles.
-    path <name>     Get the path(s) of Provisioning Profile by name.
-    uuid <path>     Display the UDID of a Provisioning Profile by path.
-    devices <path>  Display the list of provisioned devices.
+    list                 List installed Provisioning Profiles.
+    path <name>          Get the path(s) of Provisioning Profile by name.
+    uuid <path>          Display the UDID of a Provisioning Profile by path.
+    devices <path>       Display the list of provisioned devices.
+    entitlements <path>  Display the list of entitlements.
 """
 
 
@@ -116,6 +133,12 @@ def main():
             exit(1)
         else:
             devices(sys.argv[2])
+    elif command == 'entitlements':
+        if len(sys.argv) < 3:
+            usage(command)
+            exit(1)
+        else:
+            entitlements(sys.argv[2])
 
 
 if __name__ == "__main__":
