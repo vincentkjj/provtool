@@ -56,8 +56,20 @@ def list(dir=DEFAULT_PROVPROF_DIR):
         if isProvFile(f):
             print "%s : '%s'" % (f, name(os.path.join(dir, f)))
 
+def devices(path):
+    fullpath = os.path.expanduser(path)
+    if not isProvFile(fullpath):
+        err = '%s is not a Provisioning Profile' % (fullpath)
+        #sys.stderr.write(err)
+        raise ValueError(err)  # TODO: ValueError the right kind of exception?
+        return
+    plistString = plistStringFromProvFile(fullpath)
+    plist = plistlib.readPlistFromString(plistString)
+    for device in plist['ProvisionedDevices']:
+        print device
 
-COMMANDS = ('list', 'path', 'uuid')
+
+COMMANDS = ('list', 'path', 'uuid', 'devices')
 
 
 def usage(command=None):
@@ -68,6 +80,7 @@ Available subcommands are:
     list            List installed Provisioning Profiles.
     path <name>     Get the path(s) of Provisioning Profile by name.
     uuid <path>     Display the UDID of a Provisioning Profile by path.
+    devices <path>  Display the list of provisioned devices.
 """
 
 
@@ -86,13 +99,19 @@ def main():
             usage(command)
             exit(1)
         else:
-            path(sys.argv[2])
+            path(sys.argv[1])
     elif command == 'uuid':
-        if len(sys.argv) < 2:
+        if len(sys.argv) < 3:
             usage(command)
             exit(1)
         else:
-            uuid(sys.argv[2])
+            uuid(sys.argv[1])
+    elif command == 'devices':
+        if len(sys.argv) < 3:
+            usage(command)
+            exit(1)
+        else:
+            devices(sys.argv[2])
 
 
 if __name__ == "__main__":
