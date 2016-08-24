@@ -126,7 +126,7 @@ def main():
             usage(command)
             exit(1)
         else:
-            uuid(sys.argv[1])
+            uuid(sys.argv[2])
     elif command == 'devices':
         if len(sys.argv) < 3:
             usage(command)
