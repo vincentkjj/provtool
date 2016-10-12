@@ -91,6 +91,22 @@ def entitlements(path):
 
 COMMANDS = ('list', 'path', 'uuid', 'devices', 'entitlements')
 
+def name(path):
+    fullpath = os.path.expanduser(path)
+    if not isProvFile(fullpath):
+        err = '%s is not a Provisioning Profile' % (fullpath)
+        #sys.stderr.write(err)
+        raise ValueError(err)  # TODO: ValueError the right kind of exception?
+        return
+    plistString = plistStringFromProvFile(fullpath)
+    plist = plistlib.readPlistFromString(plistString)
+
+    try:
+        import pprint
+        pprint.pprint(plist['Name'])
+    except KeyError, e:
+        print 'This provisioning profile does not contain Name, not valid?'
+
 
 def usage(command=None):
     print """
@@ -102,6 +118,7 @@ Available subcommands are:
     uuid <path>          Display the UDID of a Provisioning Profile by path.
     devices <path>       Display the list of provisioned devices.
     entitlements <path>  Display the list of entitlements.
+    name <path>          Display the name of the profile
 """
 
 
@@ -139,7 +156,14 @@ def main():
             exit(1)
         else:
             entitlements(sys.argv[2])
+    elif command == 'name':
+        if len(sys.argv) < 3:
+            usage(command)
+            exit(1)
+        else:
+            name(sys.argv[2])
 
 
 if __name__ == "__main__":
-    main()
+    #main()
+    name('/Users/wendong/Downloads/Annunci_5.6.0.20161012082718_6033/Payload/Kijiji.app/embedded.mobileprovision')
