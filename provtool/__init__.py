@@ -89,7 +89,7 @@ def entitlements(path):
     except KeyError, e:
         print 'This provisioning profile does not contain entitlements'
 
-COMMANDS = ('list', 'path', 'uuid', 'devices', 'entitlements')
+COMMANDS = ('list', 'path', 'uuid', 'devices', 'entitlements', 'name')
 
 def name(path):
     fullpath = os.path.expanduser(path)
@@ -165,5 +165,5 @@ def main():
 
 
 if __name__ == "__main__":
-    #main()
-    name('/Users/wendong/Downloads/Annunci_5.6.0.20161012082718_6033/Payload/Kijiji.app/embedded.mobileprovision')
+    main()
+    #name('/Users/wendong/Downloads/Annunci_5.6.0.20161012082718_6033/Payload/Kijiji.app/embedded.mobileprovision')
